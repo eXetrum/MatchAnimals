@@ -1,6 +1,9 @@
 from random import shuffle
 from graphics import *
+import os
 
+IMG_FOLDER = "images"
+SCORE_FILENAME = "TopPlayersScores.txt"
 
 def DrawPicture(filename, x, y, win):
     img = Image(Point(x, y), filename)
@@ -23,10 +26,13 @@ def CheckMatches(card1, card2):
     return card1 == card2
 
 def InsertInsideTheTopPlayer(playerName, timeElapsed, totalMoves):
-    filename = "TopPlayersScores.txt"
+    cwd = os.getcwd()
+    if cwd.endswith(IMG_FOLDER):
+        os.chdir(os.path.dirname(cwd))
+        
     data = []
     try:
-        with open(filename, "r") as f:
+        with open(SCORE_FILENAME, "r") as f:
             for line in f:
                 line = line.strip()
                 if line == "" or line == "\n": continue
@@ -40,7 +46,7 @@ def InsertInsideTheTopPlayer(playerName, timeElapsed, totalMoves):
     data.append((timeElapsed, playerName, totalMoves))
     data.sort()    
     # Save new updated information
-    with open(filename, "w") as f:
+    with open(SCORE_FILENAME, "w") as f:
         for i in range(min(5, len(data))):
             elapsed, name, moves = data[i]
             f.write(name + " " + str(moves) + " " + str(elapsed) + "\n")
@@ -48,6 +54,7 @@ def InsertInsideTheTopPlayer(playerName, timeElapsed, totalMoves):
 
 
 def main():
+    os.chdir(IMG_FOLDER)
     # Define list of picture file names
     FileNames = [ "0.gif", "1.gif", "2.gif", "3.gif", "4.gif", "5.gif", "6.gif", "7.gif" ]
     # Define list of picture names used for game (its just two times "FileNames")
